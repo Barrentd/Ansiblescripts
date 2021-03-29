@@ -1,0 +1,61 @@
+---
+- name: Ansible tests playbook
+  hosts: all
+  vars:
+    package:
+      - nano
+      - git 
+      - vim
+      - curl
+      - zsh
+    user: beber
+
+
+  tasks:
+    - name: Installation de git
+      apt: name=git
+
+    - name: Installation de Vim
+      apt: name=vim
+
+    - name: Check if "{{ package }}" is installed
+      when: package is defined
+      apt: 
+        name: "{{ package }}" 
+        update_cache: yes
+    
+    - name: Update all packages to their latest version
+      apt:
+        name: "*"
+        state: latest
+
+    - name: Remove useless packages from the cache
+      apt:
+        autoclean: yes
+
+    - name: Remove dependencies that are no longer required
+      apt:
+        autoremove: yes
+
+    - name: "Création d'un utilisateur : {{ user }}"
+      when: user is defined
+      user: name={{ user }} comment='Mon nouvel utilisateur' shell=/usr/bin/bash
+    
+    - name: Ajout de la clé SSH
+      when: user is defined
+      authorized_key: user={{ user }} key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+     
+    - name: "{{ user }} devient sudoer"
+      when: user is defined
+      template: src=templates/sudoers.j2 dest=/etc/sudoers.d/{{ user }}-sudoer validate='visudo -cf %s' 
+    
+    # - name: Reboot the Debian or Ubuntu server
+    #   reboot:
+    #     msg: "Reboot initiated by Ansible due to kernel updates"
+    #     connect_timeout: 5
+    #     reboot_timeout: 300
+    #     pre_reboot_delay: 0
+    #     post_reboot_delay: 30
+    #     test_command: uptime
+
+...
