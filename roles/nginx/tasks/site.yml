@@ -1,0 +1,39 @@
+
+---
+
+- name: Create file
+  become: yes
+  file:
+    path: /home/{{ user }}/{{ item }}
+    state: directory
+    owner: "{{ user }}"
+
+- name: Creating index.html
+  file:
+    path: "/home/{{ user }}/{{ item }}/index.html"
+    state: touch
+
+- name: Insert a line at the end of a file.
+  lineinfile:
+    path: "/home/{{ user }}/{{ item }}/index.html"
+    line: Hello there
+
+- name: Lien vers www
+  become: yes
+  file:
+    src: /home/{{ user }}/{{ item }}
+    dest: /var/www/{{ item }}
+    state: link
+    force: yes
+
+- name: Create conf nginx
+  template: 
+    src: templates/nginx.j2
+    dest: /etc/nginx/sites-available/{{ item }}
+
+- name: Activation du domain {{ item }}
+  file:
+    src: /etc/nginx/sites-available/{{ item }}
+    dest: /etc/nginx/sites-enabled/{{ item }}
+    state: link
+    force: yes

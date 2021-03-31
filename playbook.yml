@@ -1,19 +1,20 @@
 ---
 - name: Ansible tests playbook
-  hosts: web
+  hosts: all
+  #remote_user: beber
 
-  remote_user: beber
   vars:
     user: beber
+    domains: 
+      - local.dev
+      - demo.fr
     package:
       - nano
       - git
       - vim
       - curl
-      - nodejs
-      - npm
 
   roles:
-    #- user
-    #- utils
+    - user
+    - utils
     - nginx

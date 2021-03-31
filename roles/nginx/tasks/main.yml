@@ -10,4 +10,15 @@
   service: 
     name: nginx
     state: started
-    enabled: true
+    enabled: True
+
+- name: supprimez default.conf
+  become: yes
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: nginx reload
+
+- name: config site
+  include: site.yml
+  with_items: "{{ domains }}"

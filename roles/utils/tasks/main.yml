@@ -1,4 +1,30 @@
 ---
+
+- ping: ~
+
+- name: Update all packages to their latest version
+  apt:
+    name: "*"
+    state: latest
+
+- name: Update APT package manager repositories cache
+  become: true
+  apt:
+    update_cache: yes
+    
+- name: Upgrade installed packages
+  become: true
+  apt:
+    upgrade: dist
+
+- name: Remove useless packages from the cache
+  apt:
+    autoclean: yes
+
+- name: Remove dependencies that are no longer required
+  apt:
+    autoremove: yes
+
 - name: Installation de git
   apt: 
     name : git
@@ -11,17 +37,4 @@
   when: package is defined
   apt:
     name: "{{ package }}"
-    update_cache: yes
 
-- name: Update all packages to their latest version
-  apt:
-    name: "*"
-    state: latest
-
-- name: Remove useless packages from the cache
-  apt:
-    autoclean: yes
-
-- name: Remove dependencies that are no longer required
-  apt:
-    autoremove: yes
