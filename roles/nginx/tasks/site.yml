@@ -16,7 +16,7 @@
 - name: Insert a line at the end of a file.
   lineinfile:
     path: "/home/{{ user }}/{{ item }}/index.html"
-    line: Hello there
+    line: Hello there {{ item }}
 
 - name: Lien vers www
   become: yes

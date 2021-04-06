@@ -1,7 +1,4 @@
 ---
-
-- ping: ~
-
 - name: Update all packages to their latest version
   apt:
     name: "*"
@@ -11,7 +8,7 @@
   become: true
   apt:
     update_cache: yes
-    
+
 - name: Upgrade installed packages
   become: true
   apt:
@@ -26,15 +23,14 @@
     autoremove: yes
 
 - name: Installation de git
-  apt: 
-    name : git
+  apt:
+    name: git
 
 - name: Installation de Vim
-  apt: 
+  apt:
     name: vim
 
 - name: Install "{{ package }}"
   when: package is defined
   apt:
     name: "{{ package }}"
-
